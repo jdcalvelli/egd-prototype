@@ -1,18 +1,17 @@
 ---
 import Layout from '../layouts/Layout.astro';
 
-import Test from '../components/Test.tsx';
+import TestSvelte from '../components/TestSvelte.svelte';
 ---
 
 <Layout title="incremental game test">
 	<main>
 		<h1>incremental game test</h1>
 		<p>
-      this is a test of using astro and solid to create an incremental game
+      this is a test of using astro and svelte to create an incremental game
 		</p>
 
-    <Test />
-
+    <TestSvelte client:load/>
 	</main>
 </Layout>
 
