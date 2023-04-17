@@ -14,7 +14,7 @@
 -->
 
 <!-- first the html -->
-<h1> testing incremental game </h1>
+<h1> first pass incremental game logic :D </h1>
 
 <p> current currency: {currency} </p>
 <p> current interval: {updateInterval}</p>
