@@ -3,7 +3,8 @@
   current capacity:
     click to increment by 1
 
-    using base formula 2 * x^1.5 to increment cost on all things
+    updating formula to be based on alexander formula:
+    price = baseCost * multiplier ^ numberOwned 
 
     gen1 gives 1 currency per interval
     gen2 gives 2 currency per interval
@@ -19,13 +20,13 @@
 <p> current currency: {currency} </p>
 <p> current interval: {updateInterval}</p>
 <br>
-<p> gen1 count: {gen1} </p>
+<p> gen1 count: {gen1Owned} </p>
 <p> gen1 cost: {gen1Cost} </p>
 <br>
-<p> gen2 count: {gen2} </p>
+<p> gen2 count: {gen2Owned} </p>
 <p> gen2 cost: {gen2Cost} </p>
 <br>
-<p> gen3 count: {gen3} </p>
+<p> gen3 count: {gen3Owned} </p>
 <p> gen3 cost: {gen3Cost} </p>
 <br>
 <button on:click={incrementCurrency}> increment currency </button>
@@ -43,7 +44,7 @@
   <button on:click={() => incrementGenerator("gen3")}> buy gen 3</button>
 {/if}
 
-{#if currency >= intervalDecrementCost}
+{#if currency >= intervalDecrementStartCost}
   <button on:click={decrementInterval}> decrease interval </button>
 {/if}
 
@@ -54,22 +55,56 @@
 
 <!-- then the js script tag -->
 <script>
+
+  import { onMount } from "svelte";
+
   // variables are reactive by default
   let currency = 0;
-
   let updateInterval = 1000;
+  
   let numIntervalChanges = 0;
   let intervalDecrementAmt = 50;
-  let intervalDecrementCost = 1000;
+  let intervalDecrementStartCost = 1000;
+  let intervalDecrementCost;
 
-  let gen1 = 0;
-  let gen1Cost = 25;
+  let valueMultiplier = 1.15;
 
-  let gen2 = 0;
-  let gen2Cost = 75;
+  let gen1Owned = 0;
+  let gen1StartCost = 25;
+  let gen1Cost;
 
-  let gen3 = 0;
-  let gen3Cost = 150;
+  let gen2Owned = 0;
+  let gen2StartCost = 75;
+  let gen2Cost;
+
+  let gen3Owned = 0;
+  let gen3StartCost = 150;
+  let gen3Cost;
+
+  // SUDO START
+
+  onMount(async () => {
+    gen1Cost = gen1StartCost;
+    gen2Cost = gen2StartCost;
+    gen3Cost = gen3StartCost;
+  })
+
+  // SUDO UPDATE - COULD USE MORE WORK
+  
+  setInterval(() => {
+    if (gen1Owned > 0) {
+      currency += gen1Owned;
+    }
+    if (gen2Owned > 0) {
+      currency += 2 * gen2Owned;
+    }
+    if (gen3Owned > 0) {
+      currency += 3 * gen3Owned;
+    }
+  }, updateInterval);
+
+  // HELPER FUNCTIONS
+
 
   function incrementCurrency() {
     currency += 1;
@@ -81,7 +116,7 @@
     switch (generatorName) {
       case "gen1":
         if (currency >= gen1Cost) {
-          gen1++;
+          gen1Owned++;
           currency -= gen1Cost;
           updateGeneratorCost("gen1");
         }
@@ -89,7 +124,7 @@
 
       case "gen2":
         if (currency >= gen2Cost) {
-         gen2++;
+         gen2Owned++;
          currency -= gen2Cost;
          updateGeneratorCost("gen2");
         }
@@ -97,7 +132,7 @@
 
       case "gen3":
         if (currency >= gen3Cost) {
-          gen3++;
+          gen3Owned++;
           currency -= gen3Cost;
           updateGeneratorCost("gen3");
         }
@@ -110,27 +145,27 @@
   }
 
   function decrementInterval() {
-    if (currency > intervalDecrementCost) {
+    if (currency > intervalDecrementStartCost) {
       numIntervalChanges++;
       updateInterval -= intervalDecrementAmt;
-      currency -= intervalDecrementCost;
+      currency -= intervalDecrementStartCost;
       updateIntervalDecrementCost();
     }
   }
 
   function updateGeneratorCost(generatorName) {
-    // using base function generatorCost = last generator cost + 2 * numGenerator ^ 1.5
+    // using base function in above comment
     switch (generatorName) {
       case "gen1":
-        gen1Cost = Math.ceil(2 * Math.pow(gen1, 1.5) + 25);
+        gen1Cost = Math.ceil(gen1StartCost * Math.pow(valueMultiplier, gen1Owned))
         break;
 
       case "gen2":
-        gen2Cost = Math.ceil(2 * Math.pow(gen2, 1.5) + 75);
+        gen2Cost = Math.ceil(gen2StartCost * Math.pow(valueMultiplier, gen2Owned));
         break;
 
       case "gen3":
-        gen3Cost = Math.ceil(2 * Math.pow(gen3, 1.5) + 150);
+        gen3Cost = Math.ceil(gen3StartCost * Math.pow(valueMultiplier, gen3Owned));
         break;
     
       default:
@@ -140,20 +175,7 @@
 
   function updateIntervalDecrementCost() {
     // using base function interval cost = last interval cost + 2 * numIntervalChanges ^ 1.5
-    intervalDecrementCost = Math.ceil(2 * Math.pow(numIntervalChanges, 1.5) + 1000)
+    intervalDecrementStartCost = Math.ceil(intervalDecrementStartCost * Math.pow(valueMultiplier, numIntervalChanges))
   }
-
-  // hard coded generator interval (resolve every second)
-  setInterval(() => {
-    if (gen1 > 0) {
-      currency += gen1;
-    }
-    if (gen2 > 0) {
-      currency += 2 * gen2;
-    }
-    if (gen3 > 0) {
-      currency += 3 * gen3;
-    }
-  }, updateInterval);
 
 </script>
