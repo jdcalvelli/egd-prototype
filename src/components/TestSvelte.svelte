@@ -20,14 +20,15 @@
 <!-- first the html -->
 
 <div class="info">
-  <p> work completed: {currency} </p>
+  <h3> work completed: {currency} </h3>
   {#if gen1Owned > 0}
-    <p> automated work speed: {updateInterval}</p>
+    <p> automated work per tick: {1 * gen1Owned + 2 * gen2Owned + 4 * gen3Owned + 8 * gen4Owned + 16 * gen5Owned + 32 * gen6Owned} </p>
+    <p> automated work tick speed: {updateInterval}</p>
   {/if}
 </div>
 
 <div class="globals">
-  <button on:click={incrementCurrency}> do work </button>
+  <button on:click={incrementCurrency}>{#if gen6Owned == 0} do work {:else} do work? why bother? you've been replaced. {/if}</button>
   {#if currency >= intervalDecrementStartCost && updateInterval > 500}
     <button on:click={decrementInterval}> automate work faster (cost: {intervalDecrementCost}) </button>
   {/if}
