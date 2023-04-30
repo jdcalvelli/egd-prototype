@@ -6,14 +6,24 @@ import TestSvelte from '../components/TestSvelte.svelte';
 
 <Layout title="incremental game test">
 	<main>
-		<h1>incremental game test</h1>
-		<p>
-      this is a test of using astro and svelte to create an incremental game
-		</p>
+		<div class="header">
+			<h1> human irrelevance simulator </h1>
+			<p>
+				or, the inevitability of humanity leaving itself behind
+			</p>
+		</div>
 
     <TestSvelte client:load/>
 	</main>
 </Layout>
 
 <style>
+	
+	main {
+		padding: 32px;
+	}
+	
+	.header {
+		margin-bottom: 64px;
+	}
 </style>

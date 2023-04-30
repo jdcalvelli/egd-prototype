@@ -20,86 +20,107 @@
 <!-- first the html -->
 
 <div class="info">
-  <p> current currency: {currency} </p>
-  <p> current interval: {updateInterval}</p>
+  <p> work completed: {currency} </p>
+  {#if gen1Owned > 0}
+    <p> automated work speed: {updateInterval}</p>
+  {/if}
 </div>
 
 <div class="globals">
-  <button on:click={incrementCurrency}> increment currency </button>
+  <button on:click={incrementCurrency}> do work </button>
   {#if currency >= intervalDecrementStartCost && updateInterval > 500}
-    <button on:click={decrementInterval}> decrease interval (cost: {intervalDecrementCost}) </button>
+    <button on:click={decrementInterval}> automate work faster (cost: {intervalDecrementCost}) </button>
   {/if}
 </div>
 
 <div class="genContainer">
-  <div class="gen">
-    <p> gen1 count: {gen1Owned} </p>
-    <p> gen1 cost: {gen1Cost} </p>
-    {#if currency >= gen1Cost}
-       <button on:click={() => incrementGenerator("gen1")}> buy gen1 </button>
-    {/if}
-  </div>
   
-  <div class="gen">
-    <p> gen2 count: {gen2Owned} </p>
-    <p> gen2 cost: {gen2Cost} </p>
-    {#if currency >= gen2Cost}
-      <button on:click={() => incrementGenerator("gen2")}> buy gen 2 </button>
-    {/if}
-  </div>
+  {#if currency >= gen1StartCost || gen1Owned >= 1}
+    <div class="gen">
+      <p> steam engines: {gen1Owned} </p>
+      <p> cost: {gen1Cost} </p>
+      {#if currency >= gen1Cost}
+         <button on:click={() => incrementGenerator("gen1")}> buy steam engine </button>
+      {/if}
+    </div>
+  {/if}
   
-  <div class="gen">
-    <p> gen3 count: {gen3Owned} </p>
-    <p> gen3 cost: {gen3Cost} </p>
-    {#if currency >= gen3Cost}
-      <button on:click={() => incrementGenerator("gen3")}> buy gen 3 </button>
-    {/if}
-  </div>
+  {#if gen1Cost >= gen2StartCost}
+    <div class="gen">
+      <p> assembly lines: {gen2Owned} </p>
+      <p> cost: {gen2Cost} </p>
+      {#if currency >= gen2Cost}
+        <button on:click={() => incrementGenerator("gen2")}> buy assembly line </button>
+      {/if}
+    </div>
+  {/if}
   
-  <div class="gen">
-    <p> gen4 count: {gen4Owned} </p>
-    <p> gen4 cost: {gen4Cost} </p>
-    {#if currency >= gen4Cost}
-      <button on:click={() => incrementGenerator("gen4")}> buy gen 4 </button>
-    {/if}
-  </div>
+  {#if gen2Cost >= gen3StartCost}
+    <div class="gen">
+      <p> computers: {gen3Owned} </p>
+      <p> cost: {gen3Cost} </p>
+      {#if currency >= gen3Cost}
+        <button on:click={() => incrementGenerator("gen3")}> buy computer </button>
+      {/if}
+    </div>
+  {/if}
   
-  <div class="gen">
-    <p> gen5 count: {gen5Owned} </p>
-    <p> gen5 cost: {gen5Cost} </p>
-    {#if currency >= gen5Cost}
-      <button on:click={() => incrementGenerator("gen5")}> buy gen 5 </button>
-    {/if}
-  </div>
+  {#if gen3Cost >= gen4StartCost}
+    <div class="gen">
+      <p> machine learning models: {gen4Owned} </p>
+      <p> cost: {gen4Cost} </p>
+      {#if currency >= gen4Cost}
+        <button on:click={() => incrementGenerator("gen4")}> buy ml model </button>
+      {/if}
+    </div>
+  {/if}
   
-  <div class="gen">
-    <p> gen6 count: {gen6Owned} </p>
-    <p> gen6 cost: {gen6Cost} </p>
-    {#if currency >= gen6Cost}
-      <button on:click={() => incrementGenerator("gen6")}> buy gen 6</button>
-    {/if}
-  </div>
+  {#if gen4Cost >= gen5StartCost}
+    <div class="gen">
+      <p> large language models: {gen5Owned} </p>
+      <p> cost: {gen5Cost} </p>
+      {#if currency >= gen5Cost}
+        <button on:click={() => incrementGenerator("gen5")}> buy ll model </button>
+      {/if}
+    </div>
+  {/if}
+  
+  {#if gen5Cost >= gen6StartCost}
+    <div class="gen">
+      <p> digital overlords: {gen6Owned} </p>
+      <p> cost: {gen6Cost} </p>
+      {#if currency >= gen6Cost}
+        <button on:click={() => incrementGenerator("gen6")}> buy digital overlord </button>
+      {/if}
+    </div>
+  {/if}
+
 </div>
 
 <!-- then the css style tag -->
 <style>
+  
+  .globals {
+    padding-bottom: 64px;
+  }
+  
   .globals {
     display: flex;
     gap: 16px;
   }
   .genContainer {
     display: flex;
+    gap: 16px;
     
     height: 128px;
     width: 100%;
   }
   .gen {
-    margin: 8px;
     padding: 8px;
     border: 2px solid black;
     
     height: 100%;
-    width: 100%;
+    width: 12%;
   }
 </style>
 
@@ -116,33 +137,33 @@
   
   let numIntervalChanges = 0;
   let intervalDecrementAmt = 50;
-  let intervalDecrementStartCost = 1000;
+  let intervalDecrementStartCost = 2048;
   let intervalDecrementCost;
 
-  let valueMultiplier = 1.4;
+  let valueMultiplier = 1.2;
 
   let gen1Owned = 0;
-  let gen1StartCost = 25;
+  let gen1StartCost = 32;
   let gen1Cost;
 
   let gen2Owned = 0;
-  let gen2StartCost = 50;
+  let gen2StartCost = 64;
   let gen2Cost;
 
   let gen3Owned = 0;
-  let gen3StartCost = 100;
+  let gen3StartCost = 128;
   let gen3Cost;
   
   let gen4Owned = 0;
-  let gen4StartCost = 200;
+  let gen4StartCost = 256;
   let gen4Cost;
   
   let gen5Owned = 0;
-  let gen5StartCost = 400;
+  let gen5StartCost = 512;
   let gen5Cost;
   
   let gen6Owned = 0;
-  let gen6StartCost = 800;
+  let gen6StartCost = 1024;
   let gen6Cost;
 
   // SUDO START
